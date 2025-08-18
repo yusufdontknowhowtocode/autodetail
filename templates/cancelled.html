@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking Status — {{ brand_name }}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+    :root{
+      --brand1:#12b3c7;   /* cyan */
+      --brand2:#0f5f8e;   /* steel blue */
+      --ink:#0b1424;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:'Nunito',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 700px at 15% 15%, color-mix(in oklab, var(--brand1) 22%, white) , transparent 60%),
+        radial-gradient(900px 700px at 85% 85%, color-mix(in oklab, var(--brand2) 22%, white) , transparent 60%),
+        #eef6fb;
+      display:grid; place-items:center;
+      padding:20px;
+    }
+    .container{
+      width:min(520px, 92vw);
+      background:#fff; border:1px solid rgba(0,0,0,.06);
+      border-radius:14px; padding:28px 24px; text-align:center;
+      box-shadow:0 20px 60px rgba(7,20,36,.12);
+    }
+    h1{margin:0 0 8px; font-size:2rem; font-weight:800; letter-spacing:.2px}
+    p{margin:0; font-size:1.075rem; color:#334155}
+    .cta{
+      display:inline-block; margin-top:18px; padding:12px 18px; border-radius:10px;
+      color:#fff; text-decoration:none; font-weight:800;
+      background:linear-gradient(90deg, var(--brand1), var(--brand2));
+      transition:filter .15s ease;
+    }
+    .cta:hover{ filter:brightness(.95) }
+  </style>
+</head>
+<body>
+  <div class="container" role="status" aria-live="polite">
+    <h1>Booking Status</h1>
+    <p>{{ message }}</p>
+    <a class="cta" href="{{ url_for('book') }}">Back to Booking Page</a>
+  </div>
+</body>
+</html>

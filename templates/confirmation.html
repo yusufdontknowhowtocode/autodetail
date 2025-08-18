@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking Confirmation — {{ brand_name }}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+    :root{
+      --brand1:#12b3c7;   /* cyan */
+      --brand2:#0f5f8e;   /* steel blue */
+      --ok:#16a34a;
+      --danger:#e74c3c;
+      --ink:#0b1424;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Nunito',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 700px at 15% 15%, color-mix(in oklab, var(--brand1) 22%, white), transparent 60%),
+        radial-gradient(900px 700px at 85% 85%, color-mix(in oklab, var(--brand2) 22%, white), transparent 60%),
+        #eef6fb;
+      display:grid; place-items:center; padding:20px;
+    }
+    .container{
+      width:min(520px, 92vw);
+      background:#fff; border:1px solid rgba(0,0,0,.06);
+      border-radius:14px; padding:28px 24px; text-align:center;
+      box-shadow:0 20px 60px rgba(7,20,36,.12);
+    }
+    h1{margin:0 0 8px; font-size:2rem; font-weight:800; color:var(--ok)}
+    h2{margin:14px 0 6px; font-size:1.5rem; color:#1f2937}
+    p{margin:4px 0; font-size:1.05rem; color:#334155}
+    .btn{
+      margin: 16px 8px 0;
+      display:inline-block; padding:10px 18px; border-radius:10px; border:none;
+      font-weight:800; text-decoration:none; cursor:pointer; transition:filter .15s ease;
+      color:#fff; background:linear-gradient(90deg, var(--brand1), var(--brand2));
+    }
+    .btn:hover{ filter:brightness(.95) }
+    .cancel-btn{ background:var(--danger); }
+    .cancel-btn:hover{ filter:brightness(.95) }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✅ Booking Confirmed, {{ name }}!</h1>
+    <p>Your appointment is booked for:</p>
+    <h2>{{ date }} at {{ time }}</h2>
+    <p><strong>Service/Package:</strong> {{ service }}</p>
+    <p><strong>Location:</strong> {{ brand_address or "We’ll see you at the shop (address in email)." }}</p>
+
+    <form action="/cancel" method="POST" style="display:inline;">
+      <input type="hidden" name="date" value="{{ date }}">
+      <input type="hidden" name="time" value="{{ time }}">
+      <input type="hidden" name="name" value="{{ name }}">
+      <input type="hidden" name="service" value="{{ service }}">
+      <button type="submit" class="btn cancel-btn">Cancel Booking</button>
+    </form>
+
+    <a href="{{ url_for('home') }}" class="btn">Return to Home</a>
+    <p style="margin-top:14px; font-size:.95rem; color:#64748b;">
+      Need to reschedule? Cancel and book a new slot.
+    </p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>{{ brand_name }} — Book Appointment</title>
+
+  <!-- Base styles for the site (your dark steel theme) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='detail.css') }}">
+
+  <!-- Page-specific tweaks -->
+  <style>
+    :root{
+      --grad-a:#0f5f8e;  /* steel blue */
+      --grad-b:#12b3c7;  /* cyan/teal */
+      --panel:#0d1728;   /* dark card */
+      --ink:#e6eef7;     /* light ink */
+      --muted:#9fb2c6;   /* muted ink */
+      --border:rgba(255,255,255,.07);
+    }
+    .book-wrap{
+      min-height:100svh;
+      display:flex;align-items:center;justify-content:center;
+      padding:64px 20px;
+      background:
+        radial-gradient(1200px 800px at 10% -10%, rgba(18,179,199,.10), transparent 40%),
+        radial-gradient(1000px 800px at 110% -10%, rgba(15,95,142,.10), transparent 40%),
+        linear-gradient(160deg,#0a1220,#070e19);
+    }
+    .book-card{
+      width:100%;max-width:720px;border-radius:18px;overflow:hidden;
+      background:linear-gradient(180deg, rgba(13,23,40,.92), rgba(13,23,40,.88));
+      border:1px solid var(--border);
+      box-shadow:0 30px 80px rgba(0,0,0,.45);
+      color:var(--ink);
+    }
+    .book-head{
+      padding:22px 26px;
+      background:linear-gradient(90deg,var(--grad-b),var(--grad-a));
+      color:#fff;
+    }
+    .book-head h1{margin:0;font-size:1.6rem;line-height:1.2;letter-spacing:.3px}
+    .book-body{padding:22px 26px 26px;background:transparent}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .row + .row{margin-top:12px}
+    @media (max-width:720px){ .row{grid-template-columns:1fr} }
+
+    label{display:block;font-weight:800;font-size:.92rem;margin-bottom:6px;color:#dce8f4}
+    input,select,textarea{
+      width:100%;padding:12px 14px;border-radius:12px;
+      border:1px solid var(--border);background:#0b1424;color:var(--ink);
+      font-size:1rem;outline:none;transition:border-color .2s, box-shadow .2s;
+    }
+    input::placeholder{color:#7f93a8}
+    input:focus,select:focus,textarea:focus{
+      border-color:color-mix(in oklab, var(--grad-b) 60%, white);
+      box-shadow:0 0 0 4px color-mix(in oklab, var(--grad-b) 20%, transparent);
+    }
+
+    .actions{margin-top:18px;display:flex;gap:10px;justify-content:flex-end;align-items:center}
+    .btn{padding:.9rem 1.6rem;border:none;border-radius:12px;font-weight:800;cursor:pointer}
+    .btn-primary{color:#06121f;background:linear-gradient(90deg,var(--grad-b),var(--grad-a))}
+    .btn-primary:hover{filter:brightness(.96)}
+    .muted{color:var(--muted);font-size:.9rem}
+
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+      background:#0b1424;border:1px solid var(--border);color:#cfe4f7;
+      box-shadow:0 8px 18px rgba(0,0,0,.25)
+    }
+
+    /* header trim so it blends on dark page */
+    header{background:rgba(7,14,25,.75);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .nav a{color:#d6e6f6}
+    .nav a:hover{color:#9bdff0}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container header-inner">
+    <h1 class="brand">{{ brand_name }}</h1>
+    <nav class="nav">
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('index') }}#services">Services</a>
+      <a href="{{ url_for('index') }}#contact-section">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="book-wrap">
+  <form class="book-card" method="post" action="{{ url_for('book') }}">
+    <div class="book-head">
+      <h1>🗓️ Book Your Appointment</h1>
+      <div class="muted" style="margin-top:6px;color:#eafafe">
+        Pick a date, time & service. We’ll email a confirmation.
+      </div>
+    </div>
+
+    <div class="book-body">
+      <div class="row">
+        <div>
+          <label for="date">Select Date</label>
+          <input type="date" id="date" name="date" required min="{{ min_date }}" value="{{ request.form.get('date','') }}">
+        </div>
+        <div>
+          <label for="time">Available Time</label>
+          <select id="time" name="time" required>
+            <option value="">Select time</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="name">Your Name</label>
+          <input id="name" name="name" type="text" placeholder="Enter your full name" required value="{{ request.form.get('name','') }}">
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required value="{{ request.form.get('email','') }}">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="phone">Phone (optional)</label>
+          <input id="phone" name="phone" type="tel" placeholder="(xxx) xxx-xxxx" maxlength="14" value="{{ request.form.get('phone','') }}">
+        </div>
+        <div>
+          <label for="service">Service</label>
+          <select id="service" name="service" required>
+            <option value="">Select a service</option>
+            <option {% if request.form.get('service')=='Express Wash' %}selected{% endif %}>Express Wash</option>
+            <option {% if request.form.get('service')=='Interior Detail' %}selected{% endif %}>Interior Detail</option>
+            <option {% if request.form.get('service')=='Exterior Detail' %}selected{% endif %}>Exterior Detail</option>
+            <option {% if request.form.get('service')=='Full Detail (Interior + Exterior)' %}selected{% endif %}>Full Detail (Interior + Exterior)</option>
+            <option {% if request.form.get('service')=='Paint Correction' %}selected{% endif %}>Paint Correction</option>
+            <option {% if request.form.get('service')=='Ceramic Coating' %}selected{% endif %}>Ceramic Coating</option>
+            <option {% if request.form.get('service')=='Headlight Restoration' %}selected{% endif %}>Headlight Restoration</option>
+            <option {% if request.form.get('service')=='Engine Bay Cleaning' %}selected{% endif %}>Engine Bay Cleaning</option>
+            <option {% if request.form.get('service')=='Window Tint' %}selected{% endif %}>Window Tint</option>
+            <option {% if request.form.get('service')=='Odor Removal' %}selected{% endif %}>Odor Removal</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <span id="status" class="muted"></span>
+        <button type="submit" class="btn btn-primary">Confirm Booking</button>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        {% if badges and badges|length %}
+          {% for b in badges %}<span class="pill">{{ b }}</span>{% endfor %}
+        {% else %}
+          <span class="pill">⏰ Mon–Sat</span>
+          <span class="pill">📍 Sellersville, PA</span>
+          <span class="pill">✨ Coatings & tint available</span>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+</main>
+
+<script>
+  // phone formatter
+  (function(){
+    const phone = document.getElementById('phone');
+    if (!phone) return;
+    phone.addEventListener('input', e=>{
+      let v = e.target.value.replace(/\D/g,'').slice(0,10);
+      if (v.length >= 6) e.target.value = `(${v.slice(0,3)}) ${v.slice(3,6)}-${v.slice(6)}`;
+      else if (v.length >= 4) e.target.value = `(${v.slice(0,3)}) ${v.slice(3)}`;
+      else if (v.length >= 1) e.target.value = `(${v}`;
+      else e.target.value = '';
+    });
+  })();
+
+  // load available times
+  (function(){
+    const dateEl = document.getElementById('date');
+    const timeEl = document.getElementById('time');
+    if (!dateEl || !timeEl) return;
+
+    async function loadTimes(d){
+      timeEl.innerHTML = `<option value="">Loading…</option>`;
+      try{
+        const res = await fetch(`/available_times?date=${encodeURIComponent(d)}`);
+        const data = await res.json();
+        const slots = Array.isArray(data.times) ? data.times : (Array.isArray(data) ? data : []);
+        if (!slots.length){
+          timeEl.innerHTML = `<option value="">No times available</option>`;
+          return;
+        }
+        timeEl.innerHTML = `<option value="">Select time</option>` + slots.map(t=>`<option>${t}</option>`).join('');
+      }catch{
+        const fallback = ["9:00 AM","10:30 AM","12:00 PM","1:30 PM","3:00 PM","4:30 PM"];
+        timeEl.innerHTML = `<option value="">Select time</option>` + fallback.map(t=>`<option>${t}</option>`).join('');
+      }
+    }
+
+    dateEl.addEventListener('change', e=>{ if (e.target.value) loadTimes(e.target.value); });
+    if (dateEl.value) loadTimes(dateEl.value);
+  })();
+
+  // submit feedback
+  (function(){
+    const form = document.querySelector('form.book-card');
+    const status = document.getElementById('status');
+    if (!form || !status) return;
+    form.addEventListener('submit', ()=>{ status.textContent = 'Submitting…'; });
+  })();
+</script>
+</body>
+</html>

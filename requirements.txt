@@ -1,0 +1,13 @@
+Flask==3.0.3
+gunicorn==21.2.0
+python-dotenv==1.0.1
+supabase==2.5.1
+Flask-Limiter==3.5.0
+
+# Supabase realtime needs websockets 12+
+websockets>=12,<13
+
+# Supabase pins against httpx 0.28 changes
+httpx<0.28
+
+Werkzeug==3.0.3
