@@ -213,5 +213,33 @@
     form.addEventListener('submit', ()=>{ status.textContent = 'Submitting…'; });
   })();
 </script>
+<script>
+  // Make the date input open its picker when you click anywhere in the field
+  (function () {
+    const dateEl = document.getElementById('date');
+    if (!dateEl) return;
+
+    const openPicker = () => {
+      // Chrome/Edge/Safari 16.4+ support showPicker()
+      if (typeof dateEl.showPicker === 'function') {
+        try { dateEl.showPicker(); } catch (_) { /* ignore */ }
+      } else {
+        // Fallback: focusing usually shows the picker on other browsers
+        dateEl.focus();
+      }
+    };
+
+    // Open on click, focus (keyboard tab), or Enter/Space
+    dateEl.addEventListener('click', openPicker);
+    dateEl.addEventListener('focus', openPicker);
+    dateEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openPicker();
+      }
+    });
+  })();
+</script>
+
 </body>
 </html>
